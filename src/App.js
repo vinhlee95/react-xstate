@@ -24,6 +24,9 @@ export default function App() {
         Get todos
       </button>
       {renderTodos()}
+      {state.context.error && (
+        <span role="alert">{state.context.error.message}</span>
+      )}
     </div>
   );
 }

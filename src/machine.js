@@ -37,7 +37,8 @@ export const machine = Machine({
   id: "fetchTodos",
   initial: state.idle,
   context: {
-    data: []
+    data: [],
+    error: null
   },
   states: {
     idle: {
@@ -47,17 +48,28 @@ export const machine = Machine({
     },
     fetching: {
       invoke: {
-        src: fetchTodos,
+        src: fetchTodos, // source event to invoke
         onDone: {
           target: state.success,
           actions: assign({
-            data: (_, event) => event.data
+            data: (context, event) => event.data
           })
         },
-        onError: state.error
+        onError: {
+          target: state.error,
+          actions: assign({
+            error: (context, event) => ({
+              message: event.data
+            })
+          })
+        }
       }
     },
     success: {},
-    error: {}
+    error: {
+      on: {
+        [actions.fetchTodos]: state.fetching
+      }
+    }
   }
 });
