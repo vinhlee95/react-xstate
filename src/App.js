@@ -3,9 +3,10 @@ import { useMachine } from "@xstate/react";
 
 import "./styles.css";
 import { machine, state as todoState, actions as todoActions } from "./machine";
+import { initMachineOptions } from "./machine-options";
 
 export default function App() {
-  const [state, send] = useMachine(machine);
+  const [state, send] = useMachine(machine, initMachineOptions());
 
   const getTodos = () => {
     send(todoActions.fetchTodos);

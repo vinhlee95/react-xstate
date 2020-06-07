@@ -1,26 +1,4 @@
-import { Machine, assign } from "xstate";
-
-const todos = [
-  {
-    id: 1,
-    name: "Go to gym",
-    done: false
-  },
-  {
-    id: 2,
-    name: "Cleaning",
-    done: true
-  }
-];
-
-const fetchTodos = () => {
-  console.log("Making request to fetch todos");
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(todos);
-    }, 200);
-  });
-};
+import { Machine } from "xstate";
 
 export const state = {
   idle: "idle",
@@ -30,18 +8,15 @@ export const state = {
 };
 
 export const actions = {
-  fetchTodos: "fetchTodos"
-};
-
-const shouldFetchTodos = (context, event) => {
-  return context.canFetch;
+  fetchTodos: "fetchTodos",
+  cancelFetching: "cancelFetching"
 };
 
 export const machine = Machine({
   id: "fetchTodos",
   initial: state.idle,
   context: {
-    canFetch: false,
+    canFetch: true,
     data: [],
     error: null
   },
@@ -50,26 +25,22 @@ export const machine = Machine({
       on: {
         [actions.fetchTodos]: {
           target: state.fetching, // next target
-          cond: shouldFetchTodos // condition to move to the next target state
+          cond: "canFetch" // condition to move to the next target state
         }
       }
     },
     fetching: {
+      on: {},
+      // Invoke service
       invoke: {
-        src: fetchTodos, // source event to invoke
+        src: "fetchTodos", // source event to invoke
         onDone: {
           target: state.success,
-          actions: assign({
-            data: (context, event) => event.data
-          })
+          actions: "saveTodos"
         },
         onError: {
           target: state.error,
-          actions: assign({
-            error: (context, event) => ({
-              message: event.data
-            })
-          })
+          actions: "handleError"
         }
       }
     },
