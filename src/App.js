@@ -7,8 +7,9 @@ import { initMachineOptions } from "./machine-options";
 
 export default function App() {
   const [state, send] = useMachine(machine, initMachineOptions());
-  const isButtonDisabled = state.matches(todoState.fetching);
   const { canFetch } = state.context;
+  const isFetching = state.matches(todoState.fetching);
+  const isButtonDisabled = isFetching || !canFetch;
 
   console.log("State: ", state.value);
   console.log("Can fetch todos", state.context.canFetch);
@@ -40,7 +41,9 @@ export default function App() {
       <button disabled={isButtonDisabled} onClick={getTodos}>
         Get todos
       </button>
-      <button onClick={cancelFetching}>Cancel</button>
+      <button disabled={!isFetching} onClick={cancelFetching}>
+        Cancel
+      </button>
       <button onClick={toggleFetching}>
         {canFetch ? "Disable fetching" : "Enable fetching"}
       </button>
