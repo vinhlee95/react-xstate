@@ -30,7 +30,9 @@ export const machine = Machine({
       }
     },
     fetching: {
-      on: {},
+      on: {
+        [actions.cancelFetching]: state.idle
+      },
       // Invoke service
       invoke: {
         src: "fetchTodos", // source event to invoke
@@ -44,7 +46,11 @@ export const machine = Machine({
         }
       }
     },
-    success: {},
+    success: {
+      on: {
+        [actions.fetchTodos]: state.fetching
+      }
+    },
     error: {
       on: {
         [actions.fetchTodos]: state.fetching

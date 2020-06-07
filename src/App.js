@@ -7,9 +7,14 @@ import { initMachineOptions } from "./machine-options";
 
 export default function App() {
   const [state, send] = useMachine(machine, initMachineOptions());
+  console.log("State: ", state.value);
 
   const getTodos = () => {
     send(todoActions.fetchTodos);
+  };
+
+  const cancelFetching = () => {
+    send(todoActions.cancelFetching);
   };
 
   const renderTodos = () => {
@@ -24,6 +29,7 @@ export default function App() {
       <button disabled={isButtonDisabled} onClick={getTodos}>
         Get todos
       </button>
+      <button onClick={cancelFetching}>Cancel</button>
       {renderTodos()}
       {state.context.error && (
         <span role="alert">{state.context.error.message}</span>

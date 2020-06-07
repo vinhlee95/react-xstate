@@ -16,6 +16,6 @@ export const fetchTodos = () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(todos);
-    }, 200);
+    }, 2000);
   });
 };
