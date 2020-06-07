@@ -33,17 +33,25 @@ export const actions = {
   fetchTodos: "fetchTodos"
 };
 
+const shouldFetchTodos = (context, event) => {
+  return context.canFetch;
+};
+
 export const machine = Machine({
   id: "fetchTodos",
   initial: state.idle,
   context: {
+    canFetch: false,
     data: [],
     error: null
   },
   states: {
     idle: {
       on: {
-        [actions.fetchTodos]: state.fetching
+        [actions.fetchTodos]: {
+          target: state.fetching, // next target
+          cond: shouldFetchTodos // condition to move to the next target state
+        }
       }
     },
     fetching: {
