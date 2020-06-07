@@ -9,7 +9,9 @@ export const state = {
 
 export const actions = {
   fetchTodos: "fetchTodos",
-  cancelFetching: "cancelFetching"
+  cancelFetching: "cancelFetching",
+  disableFetching: "disableFetching",
+  enableFetching: "enableFetching"
 };
 
 export const machine = Machine({
@@ -26,6 +28,12 @@ export const machine = Machine({
         [actions.fetchTodos]: {
           target: state.fetching, // next target
           cond: "canFetch" // condition to move to the next target state
+        },
+        [actions.disableFetching]: {
+          actions: "disableFetching"
+        },
+        [actions.enableFetching]: {
+          actions: "enableFetching"
         }
       }
     },

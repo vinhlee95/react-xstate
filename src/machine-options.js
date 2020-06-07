@@ -18,6 +18,12 @@ export const initMachineOptions = () => ({
       error: {
         message: event.data
       }
+    })),
+    disableFetching: assign((context, event) => ({
+      canFetch: false
+    })),
+    enableFetching: assign((context, event) => ({
+      canFetch: true
     }))
   }
 });

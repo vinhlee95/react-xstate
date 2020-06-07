@@ -7,7 +7,11 @@ import { initMachineOptions } from "./machine-options";
 
 export default function App() {
   const [state, send] = useMachine(machine, initMachineOptions());
+  const isButtonDisabled = state.matches(todoState.fetching);
+  const { canFetch } = state.context;
+
   console.log("State: ", state.value);
+  console.log("Can fetch todos", state.context.canFetch);
 
   const getTodos = () => {
     send(todoActions.fetchTodos);
@@ -17,19 +21,29 @@ export default function App() {
     send(todoActions.cancelFetching);
   };
 
+  const toggleFetching = () => {
+    if (canFetch) {
+      send(todoActions.disableFetching);
+    } else {
+      send(todoActions.enableFetching);
+    }
+  };
+
   const renderTodos = () => {
     const todos = state.context.data;
     if (todos.length === 0) return null;
     return todos.map(todo => <div key={todo.id}>{todo.name}</div>);
   };
 
-  const isButtonDisabled = state.matches(todoState.fetching);
   return (
     <div className="App">
       <button disabled={isButtonDisabled} onClick={getTodos}>
         Get todos
       </button>
       <button onClick={cancelFetching}>Cancel</button>
+      <button onClick={toggleFetching}>
+        {canFetch ? "Disable fetching" : "Enable fetching"}
+      </button>
       {renderTodos()}
       {state.context.error && (
         <span role="alert">{state.context.error.message}</span>
